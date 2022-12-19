@@ -13,11 +13,14 @@ services:
       - /etc/localtime:/etc/localtime:ro
       - /var/run/docker.sock:/var/run/docker.sock:ro
       - ./config/proxy/static/traefik.yml:/traefik.yml:ro
+      - ./config/user-credentials/users:/user-credentials:ro"
     labels:
       - "traefik.enable=true"
       - "traefik.docker.network=traefik-proxy-network"
       - "traefik.http.routers.api.entrypoints=web"
-      - "traefik.http.routers.api.rule=Host(`traefik.localhost`)" # this is if we want to have a dashboard for Traefik
+      - "traefik.http.routers.api.rule=Host(`traefik.localhost`)"
+      - "traefik.http.routers.api.middlewares=auth"
+      - "traefik.http.middlewares.auth.basicauth.usersfile=/user-credentials"
       - "traefik.http.routers.api.service=api@internal"
     networks:
       - traefik-proxy-network
