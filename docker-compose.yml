@@ -39,19 +39,16 @@ services:
       - /etc/localtime:/etc/localtime:ro
       - /var/run/docker.sock:/var/run/docker.sock:ro
       - ./config/proxy/static/traefik.yml:/traefik.yml:ro
-      - ./config/user-credentials/users:/user-credentials:ro"
+      - ~/jenkins:/var/jenkins_home
     labels:
       - "traefik.enable=true"
       - "traefik.docker.network=traefik-proxy-network"
       - "traefik.http.routers.jenkins.entrypoints=ep_jenkins"
       - "traefik.http.routers.jenkins.rule=HostRegexp(`{subdomain:jenkins}.localhost`)"
       - "traefik.http.routers.jenkins.middlewares=auth"
-      - "traefik.http.middlewares.auth.basicauth.usersfile=/user-credentials"
     networks:
       - traefik-proxy-network
 
 networks:
   traefik-proxy-network:
     name: traefik-proxy-network
-
-# http://traefik.localhost/dashboard/#/
