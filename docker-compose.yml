@@ -1,6 +1,7 @@
 version: '3.7'
 
 services:
+
   traefik:
     image: traefik:2.5.4
     container_name: traefik
@@ -17,13 +18,39 @@ services:
     labels:
       - "traefik.enable=true"
       - "traefik.docker.network=traefik-proxy-network"
-      - "traefik.http.routers.api.entrypoints=web"
-      - "traefik.http.routers.api.rule=Host(`traefik.localhost`)"
-      - "traefik.http.routers.api.middlewares=auth"
+      - "traefik.http.routers.traefik.entrypoints=ep_traefik"
+      - "traefik.http.routers.traefik.rule=Host(`traefik.localhost`)"
+      - "traefik.http.routers.traefik.middlewares=auth"
       - "traefik.http.middlewares.auth.basicauth.usersfile=/user-credentials"
-      - "traefik.http.routers.api.service=api@internal"
+      - "traefik.http.routers.traefik.service=api@internal"
     networks:
       - traefik-proxy-network
+
+  jenkins:
+    image: jenkins/jenkins:jdk17
+    container_name: jenkins
+    #restart: unless-stopped
+    security_opt:
+      - no-new-privileges:true
+    ports:
+      - 8080:8080
+      - 5000:5000
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - ./config/proxy/static/traefik.yml:/traefik.yml:ro
+      - ./config/user-credentials/users:/user-credentials:ro"
+    labels:
+      - "traefik.enable=true"
+      - "traefik.docker.network=traefik-proxy-network"
+      - "traefik.http.routers.jenkins.entrypoints=ep_jenkins"
+      - "traefik.http.routers.jenkins.rule=Host(`jenkins.localhost`)"
+      - "traefik.http.routers.jenkins.middlewares=auth"
+      - "traefik.http.middlewares.auth.basicauth.usersfile=/user-credentials"
+ #     - "traefik.http.routers.jenkins.service=api@internal"
+    networks:
+      - traefik-proxy-network
+
 
 networks:
   traefik-proxy-network:

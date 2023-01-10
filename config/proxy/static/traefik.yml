@@ -1,20 +1,15 @@
 entryPoints:
-  web:
+  ep_traefik:
     address: ":80"
+  ep_jenkins:
+    address: ":8080"
 
-#http:
-#  routers:
-#    http-catchall:
-#      rule: hostregexp(`{host:.+}`)
-#      entrypoints:
-#      - web
-#      middlewares:
-#      - redirect-to-https
-#  middlewares:
-#    redirect-to-https:
-#      redirectScheme:
-#        scheme: https
-#        permanent: false
+http:
+ routers:
+   http-catchall:
+     rule: hostregexp(`traefik.localhost`)
+     entrypoints:
+     - ep_traefik
 
 providers:
   docker:
