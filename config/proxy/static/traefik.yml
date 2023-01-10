@@ -7,7 +7,7 @@ entryPoints:
 http:
  routers:
    http-catchall:
-     rule: hostregexp(`traefik.localhost`)
+     rule: HostRegexp(`{subdomain:traefik}.localhost`)
      entrypoints:
      - ep_traefik
 

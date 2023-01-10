@@ -5,7 +5,7 @@ services:
   traefik:
     image: traefik:2.5.4
     container_name: traefik
-    #restart: unless-stopped
+    restart: unless-stopped
     security_opt:
       - no-new-privileges:true
     ports:
@@ -19,7 +19,7 @@ services:
       - "traefik.enable=true"
       - "traefik.docker.network=traefik-proxy-network"
       - "traefik.http.routers.traefik.entrypoints=ep_traefik"
-      - "traefik.http.routers.traefik.rule=Host(`traefik.localhost`)"
+      - "traefik.http.routers.traefik.rule=HostRegexp(`{subdomain:traefik}.localhost`)"
       - "traefik.http.routers.traefik.middlewares=auth"
       - "traefik.http.middlewares.auth.basicauth.usersfile=/user-credentials"
       - "traefik.http.routers.traefik.service=api@internal"
@@ -29,7 +29,7 @@ services:
   jenkins:
     image: jenkins/jenkins:jdk17
     container_name: jenkins
-    #restart: unless-stopped
+    restart: unless-stopped
     security_opt:
       - no-new-privileges:true
     ports:
@@ -44,13 +44,11 @@ services:
       - "traefik.enable=true"
       - "traefik.docker.network=traefik-proxy-network"
       - "traefik.http.routers.jenkins.entrypoints=ep_jenkins"
-      - "traefik.http.routers.jenkins.rule=Host(`jenkins.localhost`)"
+      - "traefik.http.routers.jenkins.rule=HostRegexp(`{subdomain:jenkins}.localhost`)"
       - "traefik.http.routers.jenkins.middlewares=auth"
       - "traefik.http.middlewares.auth.basicauth.usersfile=/user-credentials"
- #     - "traefik.http.routers.jenkins.service=api@internal"
     networks:
       - traefik-proxy-network
-
 
 networks:
   traefik-proxy-network:
