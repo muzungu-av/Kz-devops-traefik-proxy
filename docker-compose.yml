@@ -3,6 +3,9 @@ version: '3.7'
 services:
 
   traefik:
+    env_file:
+      - ./.env
+    user: "${RUID}:${RGID}"
     image: traefik:2.5.4
     container_name: traefik
     restart: unless-stopped
@@ -27,6 +30,9 @@ services:
       - traefik-proxy-network
 
   jenkins:
+    env_file:
+      - ./.env
+    user: "${UID}:${GID}"
     image: jenkins/jenkins:jdk17
     container_name: jenkins
     restart: unless-stopped
@@ -39,7 +45,7 @@ services:
       - /etc/localtime:/etc/localtime:ro
       - /var/run/docker.sock:/var/run/docker.sock:ro
       - ./config/proxy/static/traefik.yml:/traefik.yml:ro
-      - ~/jenkins:/var/jenkins_home
+      - ~/.jenkins:/var/jenkins_home/
     labels:
       - "traefik.enable=true"
       - "traefik.docker.network=traefik-proxy-network"
