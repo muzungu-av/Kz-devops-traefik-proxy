@@ -12,12 +12,12 @@ services:
     security_opt:
       - no-new-privileges:true
     ports:
-      - 80:80
+      - "${TRAEFIK_PORT_EX}:${TRAEFIK_PORT_IN}"
     volumes:
       - /etc/localtime:/etc/localtime:ro
       - /var/run/docker.sock:/var/run/docker.sock:ro
       - ./config/proxy/static/traefik.yml:/traefik.yml:ro
-      - ./config/user-credentials/users:/user-credentials:ro"
+      - ./config/user-credentials/users:/user-credentials:ro
     labels:
       - "traefik.enable=true"
       - "traefik.docker.network=traefik-proxy-network"
@@ -39,8 +39,8 @@ services:
     security_opt:
       - no-new-privileges:true
     ports:
-      - 8080:8080
-      - 5000:5000
+      - "${JENKINS_PORT1_EX}:${JENKINS_PORT1_IN}"
+      - "${JENKINS_PORT2_EX}:${JENKINS_PORT2_IN}"
     volumes:
       - /etc/localtime:/etc/localtime:ro
       - /var/run/docker.sock:/var/run/docker.sock:ro

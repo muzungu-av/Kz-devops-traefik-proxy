@@ -1,6 +1,6 @@
 entryPoints:
   ep_traefik:
-    address: ":80"
+    address: ":8000" #https://github.com/traefik/traefik/issues/7545
   ep_jenkins:
     address: ":8080"
 
